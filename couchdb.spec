@@ -47,8 +47,12 @@ JavaScript acting as the default view definition language.
     --with-js-include=$(pkg-config --cflags libjs | sed 's/-I//') \
     --with-erlang=%_libdir/erlang/%_includedir 
 
-%make 
-
+# build seems to fail on klodia, with make -j16
+# (no error logger present) error: "Failed to create 16 scheduler-threads(no er (eagain:11); ror logger present) 
+# error: "Failed to creaonly 15 scheduler-threads te 16 scheduler-twhreerae dcs (eagain:11); on(rno erealy 1ror 
+# logger present) teed.\n"
+# 3 scheduler-threads rror: "Failed to create 16were created.\n"
+make 
 
 %install
 rm -rf $RPM_BUILD_ROOT
