@@ -15,7 +15,7 @@ Source0:        http://www.apache.org/dist/%{name}/%{version}/%{tarname}-%{versi
 Source1:        %{name}.init
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
-BuildRequires:  erlang-devel
+BuildRequires:  erlang-devel erlang-compiler
 BuildRequires:  libicu-devel 
 BuildRequires:  js-devel 
 BuildRequires:  help2man
