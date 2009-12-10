@@ -4,7 +4,7 @@
 %define couchdb_home %{_localstatedir}/lib/couchdb
 
 Name:           couchdb
-Version:        0.10.0
+Version:        0.10.1
 Release:        %mkrel 1 
 Summary:        A document database server, accessible via a RESTful JSON API
 
@@ -43,7 +43,7 @@ JavaScript acting as the default view definition language.
 %setup -q -n %{tarname}-%{version}
 
 %build
-%configure  \
+%configure2_5x  \
     --with-js-include=$(pkg-config --cflags libjs | sed 's/-I//') \
     --with-erlang=%_libdir/erlang/%_includedir 
 
