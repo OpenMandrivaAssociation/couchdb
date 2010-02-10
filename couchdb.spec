@@ -5,7 +5,7 @@
 
 Name:           couchdb
 Version:        0.10.1
-Release:        %mkrel 1 
+Release:        %mkrel 2 
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
@@ -22,6 +22,7 @@ BuildRequires:  help2man
 BuildRequires:  curl-devel
 
 Requires:       erlang 
+Requires:       couchdb-bin
 #Requires:       libicu-devel
 
 #Initscripts
@@ -38,6 +39,23 @@ Among other features, it provides robust, incremental replication
 with bi-directional conflict detection and resolution, and is 
 queryable and indexable using a table-oriented view engine with 
 JavaScript acting as the default view definition language.
+
+This package contains the initscript needed to start a systemwide instance
+of CouchDB.
+
+%package bin
+Group: Databases
+Summary: Binary for Couchdb, a document database server
+
+%description bin
+Apache CouchDB is a distributed, fault-tolerant and schema-free 
+document-oriented database accessible via a RESTful HTTP/JSON API. 
+Among other features, it provides robust, incremental replication 
+with bi-directional conflict detection and resolution, and is 
+queryable and indexable using a table-oriented view engine with 
+JavaScript acting as the default view definition language.
+
+This package contains the binary needed to run a CouchDB instance.
 
 %prep
 %setup -q -n %{tarname}-%{version}
@@ -109,15 +127,18 @@ rm -rf $RPM_BUILD_ROOT
 %files
 %defattr(-,root,root,-)
 %doc AUTHORS BUGS CHANGES LICENSE NEWS NOTICE README THANKS
+%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
+%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
+%{_initrddir}/%{name}
+
+%files bin
+%defattr(-,root,root,-)
+%{_bindir}/*
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/local.d
 %dir %{_sysconfdir}/%{name}/default.d
 %config(noreplace) %attr(0644,%{couchdb_user},root) %{_sysconfdir}/%{name}/default.ini
 %config(noreplace) %attr(0644,%{couchdb_user},root) %{_sysconfdir}/%{name}/local.ini
-%config(noreplace) %{_sysconfdir}/sysconfig/%{name}
-%config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
-%{_initrddir}/%{name}
-%{_bindir}/*
 %{_libdir}/%{name}
 %{_datadir}/%{name}
 %{_mandir}/man1/*
