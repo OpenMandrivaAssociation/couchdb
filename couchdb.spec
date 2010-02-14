@@ -13,6 +13,10 @@ License:        Apache License
 URL:            http://couchdb.apache.org/
 Source0:        http://www.apache.org/dist/%{name}/%{version}/%{tarname}-%{version}.tar.gz
 Source1:        %{name}.init
+# Debian patch
+# Don't depend on icu-config command
+Patch0:		icu-config.patch
+
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:  erlang-devel erlang-compiler
@@ -23,7 +27,9 @@ BuildRequires:  curl-devel
 
 Requires:       erlang 
 Requires:       couchdb-bin
-#Requires:       libicu-devel
+Requires:	erlang-crypto
+Requires:	erlang-ssl
+Requires:	erlang-xmerl
 
 #Initscripts
 Requires(post): chkconfig
@@ -59,6 +65,7 @@ This package contains the binary needed to run a CouchDB instance.
 
 %prep
 %setup -q -n %{tarname}-%{version}
+%patch0 -p1 -b .icu
 
 %build
 %configure2_5x  \
