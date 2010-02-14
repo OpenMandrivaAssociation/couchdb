@@ -30,6 +30,8 @@ Requires:       couchdb-bin
 Requires:	erlang-crypto
 Requires:	erlang-ssl
 Requires:	erlang-xmerl
+Requires:	erlang-inets
+Requires:	erlang-tools
 
 #Initscripts
 Requires(post): chkconfig
