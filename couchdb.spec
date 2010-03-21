@@ -5,7 +5,7 @@
 
 Name:           couchdb
 Version:        0.10.1
-Release:        %mkrel 3
+Release:        %mkrel 4
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
