@@ -72,7 +72,7 @@ This package contains the binary needed to run a CouchDB instance.
 %build
 %configure2_5x  \
     --with-js-include=$(pkg-config --cflags libjs | sed 's/-I//') \
-    --with-erlang=%_libdir/erlang/%_includedir 
+    --with-erlang=%_libdir/erlang%_includedir 
 
 # build seems to fail on klodia, with make -j16
 # (no error logger present) error: "Failed to create 16 scheduler-threads(no er (eagain:11); ror logger present) 
