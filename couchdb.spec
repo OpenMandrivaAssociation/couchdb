@@ -5,7 +5,7 @@
 
 Name:           couchdb
 Version:        0.10.1
-Release:        %mkrel 4
+Release:        %mkrel 5
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
@@ -25,14 +25,7 @@ BuildRequires:  js-devel
 BuildRequires:  help2man
 BuildRequires:  curl-devel
 
-Requires:       erlang 
 Requires:       couchdb-bin
-Requires:	erlang-crypto
-Requires:	erlang-ssl
-Requires:	erlang-xmerl
-Requires:	erlang-inets
-Requires:	erlang-tools
-
 #Initscripts
 Requires(post): chkconfig
 Requires(preun): chkconfig initscripts
@@ -54,6 +47,14 @@ of CouchDB.
 %package bin
 Group: Databases
 Summary: Binary for Couchdb, a document database server
+
+Requires:   erlang 
+Requires:	erlang-crypto
+Requires:	erlang-ssl
+Requires:	erlang-xmerl
+Requires:	erlang-inets
+Requires:	erlang-tools
+
 
 %description bin
 Apache CouchDB is a distributed, fault-tolerant and schema-free 
