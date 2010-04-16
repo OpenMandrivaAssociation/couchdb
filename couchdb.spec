@@ -4,8 +4,8 @@
 %define couchdb_home %{_localstatedir}/lib/couchdb
 
 Name:           couchdb
-Version:        0.10.1
-Release:        %mkrel 5
+Version:        0.11.0
+Release:        %mkrel 1
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
@@ -13,9 +13,6 @@ License:        Apache License
 URL:            http://couchdb.apache.org/
 Source0:        http://www.apache.org/dist/%{name}/%{version}/%{tarname}-%{version}.tar.gz
 Source1:        %{name}.init
-# Debian patch
-# Don't depend on icu-config command
-Patch0:		icu-config.patch
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
@@ -68,7 +65,6 @@ This package contains the binary needed to run a CouchDB instance.
 
 %prep
 %setup -q -n %{tarname}-%{version}
-%patch0 -p1 -b .icu
 
 %build
 %configure2_5x  \
