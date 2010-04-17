@@ -5,7 +5,7 @@
 
 Name:           couchdb
 Version:        0.11.0
-Release:        %mkrel 1
+Release:        %mkrel 2
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
@@ -124,10 +124,10 @@ rm -rf $RPM_BUILD_ROOT
 %post
 %_post_service %{name}
 
-%postun
+%postun bin
 %_postun_userdel %{name}
 
-%preun
+%preun bin
 %_preun_service %{name}
 
 %files
