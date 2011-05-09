@@ -18,7 +18,7 @@ BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:  erlang-devel erlang-compiler
 BuildRequires:  libicu-devel 
-BuildRequires:  js-devel 
+BuildRequires:  pkgconfig(libjs)
 BuildRequires:  help2man
 BuildRequires:  curl-devel
 
