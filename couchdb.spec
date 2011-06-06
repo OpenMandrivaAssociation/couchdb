@@ -16,7 +16,7 @@ Source1:        %{name}.init
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
-BuildRequires:  erlang-devel erlang-compiler erlang-crypto
+BuildRequires:  erlang-devel erlang-compiler erlang-crypto erlang-eunit
 BuildRequires:  libicu-devel 
 BuildRequires:  pkgconfig(libjs)
 BuildRequires:  help2man
