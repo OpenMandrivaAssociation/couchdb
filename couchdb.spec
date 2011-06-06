@@ -4,8 +4,8 @@
 %define couchdb_home %{_localstatedir}/lib/couchdb
 
 Name:           couchdb
-Version:        1.0.2
-Release:        %mkrel 2
+Version:        1.1.0
+Release:        %mkrel 1
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
@@ -16,7 +16,7 @@ Source1:        %{name}.init
 
 BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
-BuildRequires:  erlang-devel erlang-compiler
+BuildRequires:  erlang-devel erlang-compiler erlang-crypto
 BuildRequires:  libicu-devel 
 BuildRequires:  pkgconfig(libjs)
 BuildRequires:  help2man
