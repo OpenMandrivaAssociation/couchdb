@@ -4,8 +4,8 @@
 %define couchdb_home %{_localstatedir}/lib/couchdb
 
 Name:           couchdb
-Version:        1.1.0
-Release:        %mkrel 1
+Version:        1.2.0
+Release:        1
 Summary:        A document database server, accessible via a RESTful JSON API
 
 Group:          Databases
@@ -13,8 +13,6 @@ License:        Apache License
 URL:            http://couchdb.apache.org/
 Source0:        http://www.apache.org/dist/%{name}/%{version}/%{tarname}-%{version}.tar.gz
 Source1:        %{name}.init
-
-BuildRoot:      %{_tmppath}/%{name}-%{version}-%{release}-root
 
 BuildRequires:  erlang-devel erlang-compiler erlang-crypto erlang-eunit
 BuildRequires:  libicu-devel 
@@ -79,8 +77,7 @@ This package contains the binary needed to run a CouchDB instance.
 make 
 
 %install
-rm -rf $RPM_BUILD_ROOT
-make install DESTDIR=$RPM_BUILD_ROOT
+%makeinstall_std
 
 ## Install couchdb initscript
 install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_initrddir}/%{name}
@@ -114,10 +111,6 @@ rm -rf  $RPM_BUILD_ROOT%{_datadir}/doc/couchdb
 find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 
 
-%clean
-rm -rf $RPM_BUILD_ROOT
-
-
 %pre bin
 %_pre_useradd %{couchdb_user}  %{couchdb_home} /bin/bash 
 
@@ -131,14 +124,12 @@ rm -rf $RPM_BUILD_ROOT
 %_preun_service %{name}
 
 %files
-%defattr(-,root,root,-)
 %doc AUTHORS BUGS CHANGES LICENSE NEWS NOTICE README THANKS
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
 %{_initrddir}/%{name}
 
 %files bin
-%defattr(-,root,root,-)
 %{_bindir}/*
 %dir %{_sysconfdir}/%{name}
 %dir %{_sysconfdir}/%{name}/local.d
