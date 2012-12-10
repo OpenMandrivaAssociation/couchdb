@@ -3,30 +3,26 @@
 %define couchdb_group couchdb
 %define couchdb_home %{_localstatedir}/lib/couchdb
 
-Name:           couchdb
-Version:        1.2.0
-Release:        1
-Summary:        A document database server, accessible via a RESTful JSON API
+Name:		couchdb
+Version:	1.2.0
+Release:	%mkrel 2
+Summary:	A document database server, accessible via a RESTful JSON API
+Group:		Databases
+License:	Apache License
+URL:		http://couchdb.apache.org/
+Source0:	http://www.apache.org/dist/%{name}/releases/%{version}/%{tarname}-%{version}.tar.gz
+Source1:	%{name}.service
+Source2:	%{name}.tmpfiles.conf
 
-Group:          Databases
-License:        Apache License
-URL:            http://couchdb.apache.org/
-Source0:        http://www.apache.org/dist/%{name}/%{version}/%{tarname}-%{version}.tar.gz
-Source1:        %{name}.init
+BuildRequires:	erlang-devel erlang-compiler erlang-crypto erlang-eunit
+BuildRequires:	libicu-devel 
+BuildRequires:	js-devel 
+BuildRequires:	help2man
+BuildRequires:	curl-devel
 
-BuildRequires:  erlang-devel erlang-compiler erlang-crypto erlang-eunit
-BuildRequires:  libicu-devel 
-BuildRequires:  pkgconfig(libjs)
-BuildRequires:  help2man
-BuildRequires:  curl-devel
+Requires:	couchdb-bin
 
-Requires:       couchdb-bin
-#Initscripts
-Requires(post): chkconfig
-Requires(preun): chkconfig initscripts
-
-Requires(pre): shadow-utils
-
+Requires(pre):	shadow-utils
 
 %description
 Apache CouchDB is a distributed, fault-tolerant and schema-free 
@@ -36,20 +32,21 @@ with bi-directional conflict detection and resolution, and is
 queryable and indexable using a table-oriented view engine with 
 JavaScript acting as the default view definition language.
 
-This package contains the initscript needed to start a systemwide instance
-of CouchDB.
+This package contains the systemd unit needed to start a systemwide
+instance of CouchDB.
 
-%package bin
-Group: Databases
-Summary: Binary for Couchdb, a document database server
+%package	bin
+Group:		Databases
+Summary:	Binary for Couchdb, a document database server
 
-Requires:   erlang 
+Requires:	erlang 
 Requires:	erlang-crypto
 Requires:	erlang-ssl
 Requires:	erlang-xmerl
 Requires:	erlang-inets
 Requires:	erlang-tools
-
+Requires:	erlang-public_key
+Requires:	erlang-os_mon
 
 %description bin
 Apache CouchDB is a distributed, fault-tolerant and schema-free 
@@ -61,73 +58,82 @@ JavaScript acting as the default view definition language.
 
 This package contains the binary needed to run a CouchDB instance.
 
+
 %prep
 %setup -q -n %{tarname}-%{version}
 
-%build
-%configure2_5x  \
-    --with-js-include=$(pkg-config --cflags libjs | sed 's/-I//') \
-    --with-erlang=%_libdir/erlang%_includedir 
 
-# build seems to fail on klodia, with make -j16
-# (no error logger present) error: "Failed to create 16 scheduler-threads(no er (eagain:11); ror logger present) 
-# error: "Failed to creaonly 15 scheduler-threads te 16 scheduler-twhreerae dcs (eagain:11); on(rno erealy 1ror 
-# logger present) teed.\n"
-# 3 scheduler-threads rror: "Failed to create 16were created.\n"
-make 
+%build
+autoreconf -fi
+%configure2_5x \
+    --with-js-include=%{_includedir}/js \
+    --with-erlang=%{_libdir}/erlang%{_includedir}
+
+%make 
+
 
 %install
 %makeinstall_std
 
-## Install couchdb initscript
-install -D -m 755 %{SOURCE1} $RPM_BUILD_ROOT%{_initrddir}/%{name}
+# Libdir for systemd unit
+sed -i -e 's|@LIBDIR@|%{_libdir}|' %{SOURCE1}
+
+# Install systemd unit
+install -D -m 755 %{SOURCE1} %{buildroot}%{_unitdir}/%{name}.service
+
+# Install /etc/tmpfiles.d entry
+install -D -m 644 %{SOURCE2} %{buildroot}%{_sysconfdir}/tmpfiles.d/%{name}.conf
 
 # Create /var/log/couchdb
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/log/%{name}
+mkdir -p %{buildroot}%{_localstatedir}/log/%{name}
 
 # Create /var/run/couchdb
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/run/%{name}
+mkdir -p %{buildroot}%{_localstatedir}/run/%{name}
 
 # Create /var/lib/couchdb
-mkdir -p $RPM_BUILD_ROOT%{_localstatedir}/lib/%{name}
+mkdir -p %{buildroot}%{_localstatedir}/lib/%{name}
 
 # Create /etc/couchdb/default.d
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/default.d
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/default.d
 
 # Create /etc/couchdb/local.d
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/%{name}/local.d
+mkdir -p %{buildroot}%{_sysconfdir}/%{name}/local.d
 
 ## Use /etc/sysconfig instead of /etc/default
-mkdir -p $RPM_BUILD_ROOT%{_sysconfdir}/sysconfig
-mv $RPM_BUILD_ROOT%{_sysconfdir}/default/couchdb \
-$RPM_BUILD_ROOT%{_sysconfdir}/sysconfig/%{name}
-rm -rf $RPM_BUILD_ROOT%{_sysconfdir}/default
+mkdir -p %{buildroot}%{_sysconfdir}/sysconfig
+mv %{buildroot}%{_sysconfdir}/default/couchdb \
+%{buildroot}%{_sysconfdir}/sysconfig/%{name}
+rm -rf %{buildroot}%{_sysconfdir}/default
 
 # Remove unecessary files
-rm $RPM_BUILD_ROOT%{_sysconfdir}/rc.d/couchdb
-rm -rf  $RPM_BUILD_ROOT%{_datadir}/doc/couchdb
+rm %{buildroot}%{_sysconfdir}/rc.d/couchdb
+rm -rf  %{buildroot}%{_datadir}/doc/couchdb
 
 # clean-up .la archives
-find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
+find %{buildroot} -name '*.la' -exec rm -f {} ';'
 
 
 %pre bin
 %_pre_useradd %{couchdb_user}  %{couchdb_home} /bin/bash 
 
+
 %post
 %_post_service %{name}
+
 
 %postun bin
 %_postun_userdel %{couchdb_user}
 
+
 %preun 
 %_preun_service %{name}
+
 
 %files
 %doc AUTHORS BUGS CHANGES LICENSE NEWS NOTICE README THANKS
 %config(noreplace) %{_sysconfdir}/sysconfig/%{name}
 %config(noreplace) %{_sysconfdir}/logrotate.d/%{name}
-%{_initrddir}/%{name}
+%{_unitdir}/%{name}.service
 
 %files bin
 %{_bindir}/*
@@ -136,11 +142,10 @@ find $RPM_BUILD_ROOT -name '*.la' -exec rm -f {} ';'
 %dir %{_sysconfdir}/%{name}/default.d
 %config(noreplace) %attr(0644,%{couchdb_user},root) %{_sysconfdir}/%{name}/default.ini
 %config(noreplace) %attr(0644,%{couchdb_user},root) %{_sysconfdir}/%{name}/local.ini
+%{_sysconfdir}/tmpfiles.d/%{name}.conf
 %{_libdir}/%{name}
 %{_datadir}/%{name}
 %{_mandir}/man1/*
 %dir %attr(0755,%{couchdb_user},root) %{_localstatedir}/log/%{name}
 %dir %attr(0755,%{couchdb_user},root) %{_localstatedir}/run/%{name}
 %dir %attr(0755,%{couchdb_user},root) %{_localstatedir}/lib/%{name}
-
-
