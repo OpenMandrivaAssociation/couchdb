@@ -9,7 +9,7 @@ Release:	3
 Summary:	A document database server, accessible via a RESTful JSON API
 Group:		Databases
 License:	Apache License
-URL:		http://couchdb.apache.org/
+URL:		https://couchdb.apache.org/
 Source0:	http://www.apache.org/dist/%{name}/releases/%{version}/%{tarname}-%{version}.tar.gz
 Source1:	%{name}.service
 Source2:	%{name}.tmpfiles.conf
