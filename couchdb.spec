@@ -14,6 +14,11 @@ Source0:	http://www.apache.org/dist/%{name}/releases/%{version}/%{tarname}-%{ver
 Source1:	%{name}.service
 Source2:	%{name}.tmpfiles.conf
 
+BuildRequires:	autoconf
+BuildRequires:	automake
+BuildRequires:	libtool-base
+BuildRequires:	slibtool
+BuildRequires:	make
 BuildRequires:	erlang-devel erlang-compiler erlang-crypto erlang-eunit
 BuildRequires:	libicu-devel 
 BuildRequires:	js-devel 
